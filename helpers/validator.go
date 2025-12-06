@@ -15,7 +15,7 @@ func TranslateErrorMessage(err error) map[string]string {
 
 	if validationErrors, ok := err.(validator.ValidationErrors); ok {
 		for _, fieldError := range validationErrors {
-			field := fieldError.field() //stores the names of fields that failed validation
+			field := fieldError.Field() //stores the names of fields that failed validation
 			switch fieldError.Tag() {   //handle different types of validation
 			case "required":
 				errorsMap[field] = fmt.Sprintf("%s is required", field)
@@ -35,4 +35,28 @@ func TranslateErrorMessage(err error) map[string]string {
 		}
 	}
 
+	// Handle error from GORM for duplicate entry
+	if err != nil {
+		// Check if the error contains "Duplicate entry" (duplicate data in the database)
+		if strings.Contains(err.Error(), "Duplicate entry") {
+			if strings.Contains(err.Error(), "username") {
+				errorsMap["Username"] = "Username already exists"
+			}
+			if strings.Contains(err.Error(), "email") {
+				errorsMap["Email"] = "Email already exists"
+			}
+		} else if err == gorm.ErrRecordNotFound {
+			// If the data being searched for is not found in the database
+			errorsMap["error"] = "Record not found"
+		}
+	}
+
+	// Returns a map containing error messages
+	return errorsMap
+}
+
+// IsDuplicateEntryError detects whether the error from the database is a duplicate entry
+func IsDuplicateEntryError(err error) bool {
+	// Checks whether the error is a duplicate entry
+	return err != nil && strings.Contains(err.Error(), "Duplicate entry")
 }
