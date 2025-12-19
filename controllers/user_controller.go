@@ -104,12 +104,12 @@ func FindUserById(c *gin.Context) {
 	})
 }
 
-func UpdateUser(cc *gin.Context) {
+func UpdateUser(c *gin.Context) {
 	// Get user ID from URL parameter
 	id := c.Param("id")
 
 	// Initialize user
-	var user models.user
+	var user models.User
 
 	// Search user by ID
 	if err := database.DB.First(&user, id).Error; err != nil {
