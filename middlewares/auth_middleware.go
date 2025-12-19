@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"net/http"
-	"satrikoding/backend-api/config"
+	"santrikoding/backend-api/config"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -34,13 +34,13 @@ func AuthMiddleware() gin.HandlerFunc {
 		claims := &jwt.RegisteredClaims{}
 
 		// parse token and verify signature with jwtKey
-		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 			// return the secret key to verify the token
 			return jwtKey, nil
 		})
 
 		// if the token is invalid or an error occurs during parsing
-		if err != nil || !token.invalid {
+		if err != nil || !token.Valid {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "Invalid token",
 			})

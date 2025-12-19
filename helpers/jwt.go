@@ -14,7 +14,7 @@ var jwtKey = []byte(config.GetEnv("JWT_SECRET",
 func GenerateToken(username string) string {
 	// Set the token expiration time
 	// here we set it to 60 minutes from the current time
-	expirationTIme := time.Now().Add(60 * time.Minute)
+	expirationTime := time.Now().Add(60 * time.Minute)
 
 	// create jwt claims
 	// Subject contains the username,
